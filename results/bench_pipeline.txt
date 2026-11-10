@@ -1,0 +1,38 @@
+# bench_spsc (queue only, 32-byte messages)
+| prod:cons | best Mmsg/s | median Mmsg/s |
+|-----------|-------------|---------------|
+|    2:4    |       433.2 |         429.9 |
+|    2:3    |       418.6 |         319.2 |
+|    8:9    |       475.6 |         436.0 |
+|    2:10   |       503.9 |         418.1 |
+
+# bench_pipeline, paced + unthrottled (producer cpu 2, matching cpu 4, batch 16)
+TSC 3.740 GHz, producer cpu 2, matching cpu 4, 2000000 msgs per run
+
+| rate msg/s | Mmsg/s    | p50 ns  | p99 ns  | p99.9 ns | max ns    | mean ns   |
+|------------|-----------|---------|---------|----------|-----------|-----------|
+|    250000 |      0.25 |     228 |  195274 |   574494 |   1237426 |      9494 |
+|    500000 |      0.50 |     177 |   53038 |   202454 |    660274 |      1976 |
+|   1000000 |      1.00 |     175 |  159866 |   234038 |    483340 |      5246 |
+|   2000000 |      2.00 |     169 |  172298 |   214270 |    369842 |      6547 |
+|       max |     24.27 | 2437232 | 4860707 |  4894981 |   4899795 |   2654331 |
+
+# unthrottled throughput, 5 repeats per batch size (shows run-to-run noise)
+batch=1:
+        8.31  Mmsg/s
+       11.26  Mmsg/s
+       22.57  Mmsg/s
+        9.53  Mmsg/s
+       14.50  Mmsg/s
+batch=16:
+       25.02  Mmsg/s
+       22.06  Mmsg/s
+       20.67  Mmsg/s
+       23.12  Mmsg/s
+       22.55  Mmsg/s
+batch=64:
+       23.44  Mmsg/s
+       27.14  Mmsg/s
+       25.29  Mmsg/s
+       27.72  Mmsg/s
+       27.15  Mmsg/s

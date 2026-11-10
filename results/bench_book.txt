@@ -1,0 +1,44 @@
+# environment
+Linux 6.6.87.2-microsoft-standard-WSL2
+CPU(s):                               24
+Model name:                           Intel(R) Core(TM) Ultra 9 285K
+Thread(s) per core:                   1
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+
+# bench_book (single thread, cpu 2): default capacity max_orders=262144
+generating 4000000 messages (seed 1)...
+max_orders 262144: pool 8.4 MB + id table 8.4 MB (optimized book)
+TSC 3.745 GHz, timer floor 48 cycles (12.8 ns), subtracted below
+
+| impl      | ops      | count    | p50 ns  | p90 ns  | p99 ns  | p99.9 ns | max ns    | mean ns |
+|-----------|----------|----------|---------|---------|---------|----------|-----------|---------|
+| optimized | all      |  4000000 |      26 |     121 |     210 |      307 |    757815 |      47 |
+| optimized | new      |  2280788 |      28 |     128 |     226 |      317 |    515244 |      54 |
+| optimized | cancel   |  1319832 |      22 |      74 |     175 |      281 |    730400 |      37 |
+| optimized | modify   |   399380 |      24 |     107 |     201 |      323 |    757815 |      41 |
+| reference | all      |  4000000 |      43 |     121 |     295 |      550 |   2407957 |      71 |
+| reference | new      |  2280788 |      46 |     122 |     295 |      594 |   2407957 |      75 |
+| reference | cancel   |  1319832 |      33 |     111 |     284 |      474 |    254275 |      63 |
+| reference | modify   |   399380 |      34 |     145 |     327 |      561 |    223071 |      73 |
+
+throughput (best of 3): optimized 62.77 Mmsg/s, reference 22.75 Mmsg/s (2.8x)
+events 6003560, fills 1976061, cancels 196861, rejects 1498690, final live orders 89878
+optimized and reference agree on event counts and fill notional: yes
+
+# capacity sensitivity: max_orders=1048576
+max_orders 1048576: pool 33.6 MB + id table 33.6 MB (optimized book)
+| optimized | all      |  4000000 |     125 |     179 |     297 |      467 |    911707 |     134 |
+| optimized | new      |  2280788 |     128 |     184 |     296 |      475 |    911707 |     144 |
+| optimized | cancel   |  1319832 |     121 |     168 |     287 |      425 |    408702 |     120 |
+| reference | all      |  4000000 |      44 |     125 |     307 |      573 |   3904810 |      72 |
+throughput (best of 3): optimized 28.46 Mmsg/s, reference 21.61 Mmsg/s (1.3x)
+optimized and reference agree on event counts and fill notional: yes
+
+# capacity sensitivity: max_orders=131072
+max_orders 131072: pool 4.2 MB + id table 4.2 MB (optimized book)
+| optimized | all      |  4000000 |      21 |      44 |     140 |      256 |    182560 |      27 |
+| optimized | new      |  2280788 |      21 |      47 |     144 |      266 |    126694 |      30 |
+| optimized | cancel   |  1319832 |      19 |      38 |     129 |      228 |    182560 |      23 |
+| reference | all      |  4000000 |      43 |     113 |     271 |      525 |   2306899 |      62 |
+throughput (best of 3): optimized 52.20 Mmsg/s, reference 22.07 Mmsg/s (2.4x)
+optimized and reference agree on event counts and fill notional: yes
